@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+*.log
+
+# foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+
+# bundled scratch scripts
+app/.e2e.mjs
+app/.seed.mjs
