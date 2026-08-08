@@ -24,6 +24,7 @@ export default function VaultDetail({
   const [plaintext, setPlaintext] = useState<string | null>(null);
   const [filled, setFilled] = useState<number[]>([]);
   const [notFound, setNotFound] = useState(false);
+  const [embargo, setEmbargo] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -83,6 +84,26 @@ export default function VaultDetail({
       await load();
     } catch (e: any) {
       setErr(e?.shortMessage || e?.reason || e?.message || String(e));
+    }
+    setBusy("");
+  }
+
+  /** Prove the embargo is real by trying to break it with a genuine share. */
+  async function attemptEarly() {
+    setErr("");
+    setEmbargo("");
+    setBusy("Attempting early release…");
+    try {
+      const bytes = fromB64(shareInput);
+      await writeContract(signer!).submitShare.staticCall(id, bytes[0] - 1, toHex(bytes));
+      setErr("Unexpected: the contract accepted this. Please report it.");
+    } catch (e: any) {
+      const dl = e?.revert?.args?.[0];
+      setEmbargo(
+        dl
+          ? `StillAlive(${dl}) — sealed until ${fmtTime(Number(dl))}.`
+          : e?.shortMessage || e?.reason || "reverted",
+      );
     }
     setBusy("");
   }
@@ -234,6 +255,40 @@ export default function VaultDetail({
             <div className="note bad">
               Too late. The deadline lapsed, so heartbeat and stand-down are both locked out by the contract. This is
               deliberate: coercion after the fact must not be able to stop the release.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── the embargo, demonstrable ───────────────────── */}
+      {state === "armed" && (
+        <div className="card" style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.16em", color: "var(--dim)", marginBottom: 12 }}>
+            GUARDIAN CONSOLE — SEALED
+          </div>
+          <div className="note" style={{ marginBottom: 16 }}>
+            The publisher is still checking in, so the contract will <b>refuse</b> every share — including a
+            perfectly valid one. Do not take our word for it. Paste a real share and watch it revert.
+          </div>
+          <label className="field">
+            <span>Try to open it early</span>
+            <input
+              type="text"
+              value={shareInput}
+              placeholder="paste a valid guardian share"
+              onChange={(e) => setShareInput(e.target.value)}
+            />
+          </label>
+          <button onClick={() => attemptEarly()} disabled={!!busy || !shareInput.trim()}>
+            {busy ? <><span className="spin">◐</span> {busy}</> : "Attempt release now"}
+          </button>
+          {embargo && (
+            <div className="note bad" style={{ marginTop: 16 }}>
+              <b>Refused by the contract.</b> {embargo}
+              <div style={{ marginTop: 8, color: "var(--dim)" }}>
+                This is not the interface declining — it is the chain. No quorum of guardians, and no court order
+                served on all of them at once, can produce a different result before the deadline.
+              </div>
             </div>
           )}
         </div>

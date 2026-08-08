@@ -18,6 +18,18 @@ export const ABI = [
   "event ShareRevealed(uint256 indexed id, uint8 indexed index, address indexed submitter, uint8 revealedCount)",
   "event Unlocked(uint256 indexed id, uint64 at)",
   "event Revoked(uint256 indexed id)",
+  // Declared so the UI can decode a revert into a human sentence.
+  "error StillAlive(uint64 deadline)",
+  "error NotPublisher()",
+  "error VaultRevoked()",
+  "error DeadlineLapsed()",
+  "error ShareMismatch()",
+  "error AlreadyRevealed()",
+  "error IndexOutOfRange()",
+  "error BadThreshold()",
+  "error NoCiphertext()",
+  "error BadIv()",
+  "error UnknownVault()",
 ];
 
 export const readProvider = new JsonRpcProvider(DEPLOYMENT.rpcUrl, DEPLOYMENT.chainId, {

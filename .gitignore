@@ -11,3 +11,5 @@ contracts/broadcast/
 # bundled scratch scripts
 app/.e2e.mjs
 app/.seed.mjs
+app/.record.mjs
+app/.sctest.mjs
