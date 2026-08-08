@@ -10,11 +10,20 @@ guardians. While the publisher checks in, the chain **refuses** every attempt to
 open it. The moment they go silent, it publishes itself.
 
 **[▸ Live app](https://amsorrytola.github.io/deadlight/)** ·
+**[▸ Demo video](https://amsorrytola.github.io/deadlight/demo.mp4)** ·
 **[▸ Contract on Sepolia](https://sepolia.etherscan.io/address/0xd4aC45705278Bb49aBdbF938ee596dE29fB0Be92)**
 
 *Road to Devcon — IIT Roorkee · Tracks: Censorship Resistance, Self-Sovereignty*
 
+![DEADLIGHT](docs/home.png)
+
 </div>
+
+> **The demo is real, not staged.** Vault #3 on Sepolia was armed, had a genuine
+> guardian share rejected while the publisher was checking in, lapsed when the
+> heartbeats stopped, and was then opened by two guardians publishing their
+> shares. Every state transition in the video is a transaction you can read
+> on-chain.
 
 ---
 
@@ -93,6 +102,13 @@ document still would not open a second early.
 6. **Anyone can finish it.** Share submission is permissionless — the commitment
    check is the only gate. A guardian who is themselves silenced can hand their
    share to a stranger and the release still happens.
+
+## The embargo, demonstrated
+
+Anyone can paste a genuine share into an armed vault and watch the chain refuse
+it. The guarantee is not a promise made by guardians — it is a revert.
+
+![The contract refusing a valid share](docs/demo-embargo.png)
 
 ## What it costs an adversary
 
